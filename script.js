@@ -82,7 +82,7 @@ function initTyping() {
     mistakeDisplay.innerText = mistakes;
     cpmDisplay.innerText = correctChars;
     wpmDisplay.innerText = Math.round((correctChars / 5) / ((maxTime - timeLeft) / 60));
-    accuracyDisplay.innerText = charIndex > 0 ? `${accuracy}%` : `100%`;
+    accuracyDisplay.innerText = charIndex > 0 ? `${accuracy}%` : `0%`;
 }
 
 function startTimer() {
@@ -108,7 +108,7 @@ function nextText() {
     mistakeDisplay.innerText = mistakes;
     wpmDisplay.innerText = 0;
     cpmDisplay.innerText = 0;
-    accuracyDisplay.innerText = `100%`;
+    accuracyDisplay.innerText = `0%`;
     randomParagraph();
 }
 
