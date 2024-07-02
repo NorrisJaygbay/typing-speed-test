@@ -1,3 +1,4 @@
+// variable to store all the paragraphs 
 const paragraphs = [
     // 1
     "Typing is an essential skill in the modern world, where digital communication is ubiquitous. From sending emails to writing reports, the ability to type efficiently and accurately is crucial. Mastering typing skills can significantly enhance productivity, enabling individuals to complete tasks more quickly and with fewer errors. As technology continues to advance, the demand for proficient typists remains high, making it a valuable skill in both personal and professional contexts.",
@@ -21,8 +22,13 @@ const paragraphs = [
     "Over time, typewriters evolved into electric and electronic versions, eventually leading to the development of computer keyboards. Today, typing is an integral part of daily life, with most people using keyboards on computers, tablets, and smartphones. However, traditional typing skills remain relevant, as they provide a foundation for effective digital communication."
 ];
 
+// Selecting necessary DOM elements
 const typingText = document.querySelector('.typing-text p');
-const inpField = document.querySelector('.input-field');
+const textArea = document.querySelector('.textarea');
+const welcomePage = document.querySelector('.welcome');
+const timeOver = document.querySelector('.timeOver');
+const typeAgain = document.querySelector('.typeAgain');
+const startTyping = document.querySelector('.startTyping');
 const timeDisplay = document.querySelector('.time span b');
 const mistakeDisplay = document.querySelector('.mistake span');
 const wpmDisplay = document.querySelector('.wpm span');
@@ -30,317 +36,120 @@ const cpmDisplay = document.querySelector('.cpm span');
 const accuracyDisplay = document.querySelector('.accuracy span');
 
 let timer;
-let maxTime = 90;
+let maxTime = 60; // Set maximum time for the typing test
 let timeLeft = maxTime;
-let charIndex = 0;
+let letterIndex = 0;
 let mistakes = 0;
 let isTyping = false;
 
+startTyping.addEventListener('click', ()=> { 
+    welcomePage.classList.toggle('welcomedisplay');
+    setTimeout(()=>{
+        nextText();
+    }, 150);
+})
+
+typeAgain.addEventListener('click', ()=> {
+    timeOver.classList.toggle('timeOverdisplay');
+    setTimeout(()=>{
+        nextText();
+    }, 150);
+})
+
+// Function to select a random paragraph and display it
 function randomParagraph() {
-    let randIndex = Math.floor(Math.random() * paragraphs.length);
+    let randIndex = Math.floor(Math.random() * paragraphs.length); // Generate a random paragraph index
     typingText.innerHTML = '';
+
+    // Create a span for each character in the selected paragraph
     paragraphs[randIndex].split("").forEach(char => {
         let spanTag = `<span>${char}</span>`;
         typingText.innerHTML += spanTag;
     });
-    document.addEventListener('keydown', () => inpField.focus());
-    typingText.addEventListener('click', () => inpField.focus());
+    // Focus the input field when typing or clicking on the typing area
+    document.addEventListener('keydown', () => textArea.focus());
+    typingText.addEventListener('click', () => textArea.focus());
 }
 
+// Function to initialize typing process
 function initTyping() {
-    const characters = typingText.querySelectorAll('span');
-    let typedChar = inpField.value.split("")[charIndex];
+    const letters = typingText.querySelectorAll('span');
+    let typedChar = textArea.value.split("")[letterIndex];
 
+    // Start the timer if typing just started
     if (!isTyping) {
         timer = setInterval(startTimer, 1000);
         isTyping = true;
     }
 
     if (typedChar == null) {
-        charIndex--;
-        if (characters[charIndex]) {
-            characters[charIndex].classList.remove("correct", "incorrect", "active");
+        letterIndex--;
+        if (letters[letterIndex]) {
+            letters[letterIndex].classList.remove("correct", "incorrect", "active");
         }
     } else {
-        if (characters[charIndex].innerText === typedChar) {
-            characters[charIndex].classList.add('correct');
+        // Mark character as correct or incorrect
+        if (letters[letterIndex].innerText === typedChar) {
+            letters[letterIndex].classList.add('correct');
         } else {
             mistakes++;
-            characters[charIndex].classList.add('incorrect');
+            letters[letterIndex].classList.add('incorrect');
         }
-        charIndex++;
+        letterIndex++;
     }
 
-    characters.forEach(span => span.classList.remove('active'));
-    if (characters[charIndex]) {
-        characters[charIndex].classList.add('active');
+    // Update active character
+    letters.forEach(span => span.classList.remove('active'));
+    if (letters[letterIndex]) {
+        letters[letterIndex].classList.add('active');
     }
 
-    let correctChars = charIndex - mistakes;
-    let accuracy = Math.round((correctChars / charIndex) * 100);
+    // Calculate and display accuracy
+    let correctLetter = letterIndex - mistakes;
+    let accuracy = Math.round((correctLetter / letterIndex) * 100);
 
     mistakeDisplay.innerText = mistakes;
-    cpmDisplay.innerText = correctChars;
-    wpmDisplay.innerText = Math.round((correctChars / 5) / ((maxTime - timeLeft) / 60));
-    accuracyDisplay.innerText = charIndex > 0 ? `${accuracy}%` : `0%`;
+    cpmDisplay.innerText = correctLetter;
+    wpmDisplay.innerText = Math.round((correctLetter / 5) / ((maxTime - timeLeft) / 60));
+    accuracyDisplay.innerText = letterIndex > 0 ? `${accuracy}%` : `0%`;
 }
 
+// Function to start the countdown timer
 function startTimer() {
     if (timeLeft > 0) {
         timeLeft--;
         timeDisplay.innerText = timeLeft;
     } else {
         clearInterval(timer);
-        inpField.disabled = true;
+        timeOver.classList.toggle('timeOverdisplay');
+        textArea.disabled = true;
     }
 }
 
+// Function to reset and start a new typing test
 function nextText() {
     clearInterval(timer);
     timeLeft = maxTime;
-    charIndex = 0;
+    letterIndex = 0;
     mistakes = 0;
     isTyping = false;
-    inpField.disabled = false;
-    inpField.value = '';
-    inpField.focus();
+    textArea.disabled = false;
+    textArea.value = '';
+    textArea.focus();
     timeDisplay.innerText = timeLeft;
     mistakeDisplay.innerText = mistakes;
     wpmDisplay.innerText = 0;
     cpmDisplay.innerText = 0;
     accuracyDisplay.innerText = `0%`;
     randomParagraph();
+  
 }
 
+// Initial setup
 randomParagraph();
-inpField.addEventListener('input', initTyping);
-window.addEventListener('load', ()=>{
-    inpField.value = '';
-    inpField.focus();
+textArea.addEventListener('input', initTyping);
+window.addEventListener('load', () => {
+    textArea.value = '';
+    textArea.focus();
     nextText();
-})
-
-
-
-
-
-
-
-// const paragraphs = [
-//     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Aorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Borem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Corem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Dorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus."
-// ];
-
-// const typingText = document.querySelector('.typing-text p');
-// const inpField = document.querySelector('.input-field');
-// const timeDisplay = document.querySelector('.time span b');
-// const mistakeDisplay = document.querySelector('.mistake span');
-// const wpmDisplay = document.querySelector('.wpm span');
-// const cpmDisplay = document.querySelector('.cpm span');
-
-// let timer;
-// let maxTime = 60;
-// let timeLeft = maxTime;
-// let charIndex = 0;
-// let mistakes = 0;
-// let isTyping = false;
-
-// function randomParagraph() {
-//     let randIndex = Math.floor(Math.random() * paragraphs.length);
-//     typingText.innerHTML = '';
-//     paragraphs[randIndex].split("").forEach(char => {
-//         let spanTag = `<span>${char}</span>`;
-//         typingText.innerHTML += spanTag;
-//     });
-//     document.addEventListener('keydown', () => inpField.focus());
-//     typingText.addEventListener('click', () => inpField.focus());
-// }
-
-// function initTyping() {
-//     const characters = typingText.querySelectorAll('span');
-//     let typedChar = inpField.value.split("")[charIndex];
-
-//     if (!isTyping) {
-//         timer = setInterval(startTimer, 1000);
-//         isTyping = true;
-//     }
-
-//     if (typedChar == null) {
-//         charIndex--;
-//         if (characters[charIndex]) {
-//             characters[charIndex].classList.remove("correct", "incorrect", "active");
-//         }
-//     } else {
-//         if (characters[charIndex].innerText === typedChar) {
-//             characters[charIndex].classList.add('correct');
-//         } else {
-//             mistakes++;
-//             characters[charIndex].classList.add('incorrect');
-//         }
-//         charIndex++;
-//     }
-
-//     characters.forEach(span => span.classList.remove('active'));
-//     if (characters[charIndex]) {
-//         characters[charIndex].classList.add('active');
-//     }
-
-//     mistakeDisplay.innerText = mistakes;
-//     cpmDisplay.innerText = charIndex - mistakes;
-//     wpmDisplay.innerText = Math.round(((charIndex - mistakes) / 5) / ((maxTime - timeLeft) / 60));
-// }
-
-// function startTimer() {
-//     if (timeLeft > 0) {
-//         timeLeft--;
-//         timeDisplay.innerText = timeLeft;
-//     } else {
-//         clearInterval(timer);
-//         inpField.disabled = true;
-//     }
-// }
-
-// function nextText() {
-//     clearInterval(timer);
-//     timeLeft = maxTime;
-//     charIndex = 0;
-//     mistakes = 0;
-//     isTyping = false;
-//     inpField.disabled = false;
-//     inpField.value = '';
-//     timeDisplay.innerText = timeLeft;
-//     mistakeDisplay.innerText = mistakes;
-//     wpmDisplay.innerText = 0;
-//     cpmDisplay.innerText = 0;
-//     randomParagraph();
-// }
-
-// randomParagraph();
-// inpField.addEventListener('input', initTyping);
-
-
-
-
-
-
-
-// const paragraphs = [
-//     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Aorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Borem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Corem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Dorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus."
-// ];
-
-// const typingText = document.querySelector('.typing-text');
-// const inpField = document.querySelector('.input-field');
-// let charIndex = 0;
-
-// function randomParagraph() {
-//     let randIndex = Math.floor(Math.random() * paragraphs.length);
-//     typingText.innerHTML = '';
-//     paragraphs[randIndex].split("").forEach(char => {
-//         let spanTag = `<span>${char}</span>`;
-//         typingText.innerHTML += spanTag;
-//     });
-//     document.addEventListener('keydown', () => inpField.focus());
-//     typingText.addEventListener('click', () => inpField.focus());
-// }
-
-// function initTyping() {
-//     const characters = typingText.querySelectorAll('span');
-//     let typedChar = inpField.value.split("")[charIndex];
-
-//     if (typedChar == null) {
-//         charIndex--;
-//         characters[charIndex]?.classList.remove("correct", "incorrect", "active");
-//     } else {
-//         if (characters[charIndex].innerText === typedChar) {
-//             characters[charIndex].classList.add('correct');
-//         } else {
-//             characters[charIndex].classList.add('incorrect');
-//         }
-//         charIndex++;
-//     }
-
-//     characters.forEach(span => span.classList.remove('active'));
-//     if (characters[charIndex]) {
-//         characters[charIndex].classList.add('active');
-//     }
-// }
-
-// randomParagraph();
-// inpField.addEventListener('input', initTyping);
-
-
-
-
-// const paragraphs = [
-//     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Aorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Borem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Corem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus.",
-//     "Dorem ipsum dolor sit amet consectetur adipisicing elit. Odit maiores soluta placeat accusantium sit accusamus."
-// ];
-
-// const typingText = document.querySelector('.typing-text');
-// let inpField = document.querySelector('.input-field');
-// let charIndex = 0;
-
-// function randomParagraph() {
-//     let randIndex = Math.floor(Math.random() * paragraphs.length);
-//     // console.log(paragraphs[randIndex].split(""));
-//     paragraphs[randIndex].split("").forEach(span => {
-//         let spanTag = `<span>${span}</span>`;
-//         typingText.innerHTML += spanTag;
-//     })
-//     document.addEventListener('keydown', ()=> inpField.focus());
-//     typingText.addEventListener('click', ()=> inpField.focus());
-// }
-
-// function initTyping(){
-//     const characters = typingText.querySelectorAll('span');
-//     let typedChar = inpField.value.split("")[charIndex];
-//     // console.log(characters[0]);
-//     // console.log(typedChar);
-
-//     if(typedChar == null){
-//         charIndex--;
-//         characters[charIndex].classList.remove("correct", "incorret");
-//         // characters[charIndex].classList.remove('incorrect');
-//     }else{
-//         if(characters[charIndex].innerText === typedChar){
-//             // console.log('correct');
-//             characters[charIndex].classList.add('correct');
-//         }else{
-//             // console.log('incorrect');
-//             characters[charIndex].classList.add('incorrect');
-//         }
-//         // charIndex++;
-//     }
-
-
-//     if(characters[charIndex].innerText === typedChar){
-//         // console.log('correct');
-//         characters[charIndex].classList.add('correct');
-//     }else{
-//         // console.log('incorrect');
-//         characters[charIndex].classList.add('incorrect');
-//     }
-//     charIndex++;
-//     characters.forEach(span => span.classList.remove('active'));
-//     characters[charIndex].classList.add('active');
-// }
-// // initTyping();
-// randomParagraph();
-// inpField.addEventListener('input', initTyping);
-
-// // function nextText() {
-// //     randomParagraph();
-// // }
+});

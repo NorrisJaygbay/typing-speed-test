@@ -8,36 +8,66 @@
 </head>
 <body>
     <section class="content-box">
-        <div class="typing-text">
-            <p></p>
+
+        <div class="time">
+            <p>Time Left:</p>
+            <span><b>60</b> s</span>
         </div>
-        <input type="text" class="input-field" style="padding: 10px;" autofocus>
+
+        <div class="typing-text-Cont">
+            <div class="typing-text">
+                <p></p>
+            </div>
+        </div>
+        <textarea placeholder="Type your text here....." class="textarea"></textarea>
         <div class="content">
-            <ol class="result-details">
-                <li class="time">
-                    <p>Time Left:</p>
-                    <span><b>60</b> s</span>
-                </li>
-                <li class="mistake">
-                    <p>Mistake:</p>
-                    <span>0</span>
-                </li>
-                <li class="wpm">
-                    <p>WPM:</p>
-                    <span>0</span>
-                </li>
-                <li class="cpm">
-                    <p>CPM:</p>
-                    <span>0</span>
-                </li>
-                <li class="accuracy">
-                    <p>Accuracy:</p>
-                    <span>0%</span>
-                </li>
-            </ol>
-            <button onclick="nextText()">Try Again</button>
+            <button onclick="nextText()">Change Text</button>
+        </div>
+
+        <!-- for the welcome page -->
+        <div class="welcome">
+            <div class="welcomecontTextImg">
+                <div class="typingimgcont">
+                    <img src="typing1.jpg" alt="typingimage" >
+                </div>
+                <div class="welcomeTextcont">
+                    <div>
+                        <p>Welcome to my</p>
+                        <p>Typing Speed</p>
+                        <p>Test</p>
+                    </div>
+                    <button class="startTyping">Start Typing</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- for the time over page -->
+        <div class="timeOver">
+            <div>
+                <ol class="result-details">
+                    <li class="mistake">
+                        <p>Mistake:</p>
+                        <span>0</span>
+                    </li>
+                    <li class="wpm">
+                        <p>WPM:</p>
+                        <span>0</span>
+                    </li>
+                    <li class="cpm">
+                        <p>CPM:</p>
+                        <span>0</span>
+                    </li>
+                    <li class="accuracy">
+                        <p>Accuracy:</p>
+                        <span>0%</span>
+                    </li>
+                </ol>
+                <button class="typeAgain">Type Again</button>
+            </div>
         </div>
     </section>
+
+
     <script src="script.js"></script>
 </body>
 </html>
